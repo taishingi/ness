@@ -24,7 +24,12 @@ pub mod tess
                     }
                 }
             }
-            println!("The filename {} has not been founded in {} directory", filename, dir);
+            if dir.eq(".")
+            {
+                println!("The filename {} has not been founded in the {} directory", filename, "current");
+            } else {
+                println!("The filename {} has not been founded in the {} directory", filename, dir);
+            }
             exit(1);
         }
     }
