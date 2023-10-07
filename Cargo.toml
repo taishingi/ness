@@ -10,6 +10,7 @@ audio = "0.2.0-alpha.4"
 audio-core = "0.2.0-alpha.4"
 dirs = { version = "5.0.1", features = [] }
 glob = "0.3.1"
+mysql = "24.0.0"
 rodio = "0.17.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9.21"
