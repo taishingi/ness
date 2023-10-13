@@ -1,13 +1,10 @@
-pub mod tess
-{
+pub mod tess {
     use std::path::{Path, PathBuf};
     use std::process::exit;
 
-    pub struct Find
-    {}
+    pub struct Find {}
 
-    impl Find
-    {
+    impl Find {
         pub fn search_file(dir: &String, filename: &String) -> PathBuf {
             let paths = Path::new(dir.as_str()).read_dir().unwrap();
 
@@ -24,11 +21,16 @@ pub mod tess
                     }
                 }
             }
-            if dir.eq(".")
-            {
-                println!("The filename {} has not been founded in the {} directory", filename, "current");
+            if dir.eq(".") {
+                println!(
+                    "The filename {} has not been founded in the {} directory",
+                    filename, "current"
+                );
             } else {
-                println!("The filename {} has not been founded in the {} directory", filename, dir);
+                println!(
+                    "The filename {} has not been founded in the {} directory",
+                    filename, dir
+                );
             }
             exit(1);
         }

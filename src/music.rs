@@ -1,13 +1,13 @@
 pub mod tess {
+    use mysql::prelude::*;
+    use mysql::*;
+    use rodio::{source::Source, Decoder, OutputStream};
+    use serde::{Deserialize, Serialize};
     use std::fs::{File, ReadDir};
     use std::io::BufReader;
     use std::path::Path;
-    use rodio::{Decoder, OutputStream, source::Source};
     use std::process::exit;
-    use serde::{Deserialize, Serialize};
     use std::string::String;
-    use mysql::*;
-    use mysql::prelude::*;
 
     #[derive(Debug, PartialEq, Eq)]
     pub struct Albums {
@@ -20,22 +20,21 @@ pub mod tess {
     pub struct Music {}
 
     impl Music {
-        pub fn play_album(directory: &String)
-        {
+        pub fn play_album(directory: &String) {
             let paths = std::fs::read_dir(directory.as_str()).unwrap();
 
             for path in paths {
                 let track = &path.unwrap().path().to_str().unwrap().to_string();
-                if Path::new(track).is_dir() { Music::play_album(track); } else {
+                if Path::new(track).is_dir() {
+                    Music::play_album(track);
+                } else {
                     println!("Playing {}", track);
                     Music::play(track);
                 }
             }
         }
 
-
-        pub fn find_album(album: &String) -> Vec<Albums>
-        {
+        pub fn find_album(album: &String) -> Vec<Albums> {
             let url = "mysql://tess:tess@localhost:3306/tess";
             Opts::try_from(url).expect("failed to connect to the database");
             let pool = Pool::new(url).expect("");
@@ -43,24 +42,27 @@ pub mod tess {
 
             let find = conn
                 .query_map(
-                    format!("SELECT artist,album,track FROM albums WHERE album LIKE '%{}%'", album),
-                    |(artist, album, track)| {
-                        Albums { artist, album, track }
+                    format!(
+                        "SELECT artist,album,track FROM albums WHERE album LIKE '%{}%'",
+                        album
+                    ),
+                    |(artist, album, track)| Albums {
+                        artist,
+                        album,
+                        track,
                     },
-                ).expect("");
+                )
+                .expect("");
             find
         }
 
-
-        pub fn search_and_play(p: &String)
-        {
+        pub fn search_and_play(p: &String) {
             for mc in Music::find_album(&p).iter() {
                 Music::play_album(&mc.album);
             }
         }
 
-        pub fn save_albums(dir: ReadDir)
-        {
+        pub fn save_albums(dir: ReadDir) {
             let url = "mysql://tess:tess@localhost:3306/tess";
             Opts::try_from(url).expect("failed to connect to the database");
             let pool = Pool::new(url).expect("");
@@ -72,7 +74,9 @@ pub mod tess {
                     artist  LONGTEXT NOT NULL,
                     album   LONGTEXT NOT NULL,
                     track   LONGTEXT)
-                    ").expect("");
+                    ",
+            )
+            .expect("");
 
             let paths = dir;
 
@@ -86,7 +90,13 @@ pub mod tess {
                     Music::save_albums(Path::new(track).read_dir().unwrap());
                 } else {
                     if track.contains(".flac") {
-                        let art = Path::new(track).parent().unwrap().parent().unwrap().to_str().expect("");
+                        let art = Path::new(track)
+                            .parent()
+                            .unwrap()
+                            .parent()
+                            .unwrap()
+                            .to_str()
+                            .expect("");
                         let cd = Path::new(track).parent().unwrap().to_str().expect("");
                         music.push(Albums {
                             artist: art.to_string(),
@@ -102,16 +112,18 @@ pub mod tess {
             conn.exec_batch(
                 r"INSERT INTO albums (artist, album, track)
           VALUES (:artist, :album,:track)",
-                music.iter().map(|p| params! {
-            "artist" => &p.artist,
-            "album" => &p.album ,
-            "track" => &p.track,
-        }),
-            ).expect("");
+                music.iter().map(|p| {
+                    params! {
+                        "artist" => &p.artist,
+                        "album" => &p.album ,
+                        "track" => &p.track,
+                    }
+                }),
+            )
+            .expect("");
         }
 
-        pub fn play(track: &String)
-        {
+        pub fn play(track: &String) {
             if track.is_empty() {
                 println!("track name empty");
                 exit(1);

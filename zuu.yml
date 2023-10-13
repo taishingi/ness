@@ -1,0 +1,8 @@
+hooks:
+  check: true
+  verify: true
+  lint: true
+  test: true
+  format: true
+  doc: true
+  fetch: true

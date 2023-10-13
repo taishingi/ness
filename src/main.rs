@@ -1,17 +1,18 @@
-mod music;
 mod find;
+mod music;
 
-
-use std::env::args;
-use std::process::exit;
-use dirs::audio_dir;
 use crate::find::tess::Find;
 use crate::music::tess::Music;
+use dirs::audio_dir;
+use std::env::args;
+use std::process::exit;
 
 fn main() {
     let args: Vec<String> = args().collect();
-		
-    if args.len() == 1 { exit(1); }
+
+    if args.len() == 1 {
+        exit(1);
+    }
 
     if args.len() == 2 {
         if args[1].eq("--save-albums") {
@@ -47,4 +48,3 @@ fn main() {
         }
     }
 }
-
