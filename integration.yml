@@ -1,0 +1,69 @@
+stable:
+  directory: stable
+  os: archlinux/archlinux # The box to use
+  memory: 4096 # Memory to use
+  cpus: 4 # Cpus to use
+  before_install: # Command to run before install
+    - pacman -Syyu --noconfirm
+  install: # Command to install dependencies
+    - pacman -Syyu base base-devel git rustup --noconfirm
+  after_install: # after install command
+    - rustup --version
+    - rustup default stable
+  before_script: # Command to ruin before script
+    - git clone https://github.com/taishingi/zuu
+    - cd zuu || exit 1
+    - git log -1 --stat
+  script: # The commands to run test
+    - cargo build
+    - cargo test
+  after_success: # Command after success to run
+    - echo "success"
+  after_failure: # Command after failure to run
+    - echo "failure"
+beta:
+  directory: beta
+  os: archlinux/archlinux # The box to use
+  memory: 4096 # Memory to use
+  cpus: 4 # Cpus to use
+  before_install: # Command to run before install
+    - pacman -Syyu --noconfirm
+  install: # Command to install dependencies
+    - pacman -Syyu base base-devel git rustup --noconfirm
+  after_install: # after install command
+    - rustup --version
+    - rustup default beta
+  before_script: # Command to ruin before script
+    - git clone https://github.com/taishingi/zuu
+    - cd zuu || exit 1
+    - git log -1 --stat
+  script: # The commands to run test
+    - cargo build
+    - cargo test
+  after_success: # Command after success to run
+    - echo "success"
+  after_failure: # Command after failure to run
+    - echo "failure"
+nightly:
+  directory: nightly
+  os: archlinux/archlinux # The box to use
+  memory: 4096 # Memory to use
+  cpus: 4 # Cpus to use
+  before_install: # Command to run before install
+    - pacman -Syyu --noconfirm
+  install: # Command to install dependencies
+    - pacman -Syyu base base-devel git rustup --noconfirm
+  after_install: # after install command
+    - rustup --version
+    - rustup default nightly
+  before_script: # Command to ruin before script
+    - git clone https://github.com/taishingi/zuu
+    - cd zuu || exit 1
+    - git log -1 --stat
+  script: # The commands to run test
+    - cargo build
+    - cargo test
+  after_success: # Command after success to run
+    - echo "success"
+  after_failure: # Command after failure to run
+    - echo "failure"

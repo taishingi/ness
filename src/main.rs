@@ -10,7 +10,7 @@ use crate::music::tess::Music;
 
 fn main() {
     let args: Vec<String> = args().collect();
-
+		
     if args.len() == 1 { exit(1); }
 
     if args.len() == 2 {

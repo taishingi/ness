@@ -1,6 +1,5 @@
 pub mod tess {
-    use
-    std::fs::{File, ReadDir};
+    use std::fs::{File, ReadDir};
     use std::io::BufReader;
     use std::path::Path;
     use rodio::{Decoder, OutputStream, source::Source};
@@ -128,8 +127,6 @@ pub mod tess {
             // Play the sound directly on the device
             stream_handle.play_raw(source.convert_samples()).expect("");
 
-            // The sound plays in a separate audio thread,
-            // so we need to keep the main thread alive while it's playing.
             std::thread::sleep(std::time::Duration::from_secs(t))
         }
     }

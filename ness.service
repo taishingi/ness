@@ -1,0 +1,16 @@
+[Unit]
+Description=Ness
+After=network.target
+ConditionPathExists=/home/juwishmaster/bin
+ 
+[Service]
+Type=simple 
+ExecStartPre=
+ExecStart=ness
+ExecStop=
+ExecStopPost=
+RemainAfterExit=yes
+Restart=always
+Type=notify 
+[Install]
+WantedBy=default.target
