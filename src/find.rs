@@ -13,18 +13,16 @@ pub mod tess {
                 if Path::new(d).is_dir() {
                     // sql query to save album
                     continue;
+                } else if d.contains(filename) {
+                    return Path::new(d.as_str()).to_path_buf();
                 } else {
-                    if d.contains(filename) {
-                        return Path::new(d.as_str()).to_path_buf();
-                    } else {
-                        continue;
-                    }
+                    continue;
                 }
             }
             if dir.eq(".") {
                 println!(
-                    "The filename {} has not been founded in the {} directory",
-                    filename, "current"
+                    "The filename {} has not been founded in the current directory",
+                    filename
                 );
             } else {
                 println!(

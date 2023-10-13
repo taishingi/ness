@@ -20,8 +20,8 @@ pub mod tess {
     pub struct Music {}
 
     impl Music {
-        pub fn play_album(directory: &String) {
-            let paths = std::fs::read_dir(directory.as_str()).unwrap();
+        pub fn play_album(directory: &str) {
+            let paths = std::fs::read_dir(directory).unwrap();
 
             for path in paths {
                 let track = &path.unwrap().path().to_str().unwrap().to_string();
@@ -34,30 +34,28 @@ pub mod tess {
             }
         }
 
-        pub fn find_album(album: &String) -> Vec<Albums> {
+        pub fn find_album(album: &str) -> Vec<Albums> {
             let url = "mysql://tess:tess@localhost:3306/tess";
             Opts::try_from(url).expect("failed to connect to the database");
             let pool = Pool::new(url).expect("");
             let mut conn = pool.get_conn().expect("");
 
-            let find = conn
-                .query_map(
-                    format!(
-                        "SELECT artist,album,track FROM albums WHERE album LIKE '%{}%'",
-                        album
-                    ),
-                    |(artist, album, track)| Albums {
-                        artist,
-                        album,
-                        track,
-                    },
-                )
-                .expect("");
-            find
+            conn.query_map(
+                format!(
+                    "SELECT artist,album,track FROM albums WHERE album LIKE '%{}%'",
+                    album
+                ),
+                |(artist, album, track)| Albums {
+                    artist,
+                    album,
+                    track,
+                },
+            )
+            .expect("")
         }
 
-        pub fn search_and_play(p: &String) {
-            for mc in Music::find_album(&p).iter() {
+        pub fn search_and_play(p: &str) {
+            for mc in Music::find_album(p).iter() {
                 Music::play_album(&mc.album);
             }
         }
