@@ -29,10 +29,15 @@ fn main() {
 
     if args.len() == 2 {
         if args[1].eq("--listen") {
-            Music::search_and_play(audio_dir().expect("failed to find audio dir").to_str().expect(""))
+            Music::search_and_play(
+                audio_dir()
+                    .expect("failed to find audio dir")
+                    .to_str()
+                    .expect(""),
+            )
         }
     }
-    
+
     if args.len() == 3 {
         if args[1].eq("--find-album") {
             if args[2].is_empty() {
