@@ -35,9 +35,14 @@ pub mod tess {
         }
 
         pub fn find_album(album: &str) -> Vec<Albums> {
-            let url = "mysql://tess:tess@localhost:3306/tess";
-            Opts::try_from(url).expect("failed to connect to the database");
-            let pool = Pool::new(url).expect("");
+            let url = format!(
+                "mysql://{}:{}@localhost:3306/{}",
+                std::env::var("NESS_USERNAME").expect("failed to find NESS_USERNAME"),
+                std::env::var("NESS_DBNAME").expect("Failed to find NESS_DBNAME"),
+                std::env::var("NESS_PASSWORD").expect("Failed to find NESS_PASSWORD"),
+            );
+            Opts::try_from(url.as_str()).expect("failed to connect to the database");
+            let pool = Pool::new(url.as_str()).expect("");
             let mut conn = pool.get_conn().expect("");
 
             conn.query_map(
@@ -61,11 +66,12 @@ pub mod tess {
         }
 
         pub fn save_albums(dir: ReadDir) {
-            let url = format!("mysql://{}:{}@localhost:3306/{}",
-           std::env::var("NESS_USERNAME").expect("failed to find NESS_USERNAME"),
-            std::env::var("NESS_DBNAME").expect("Failed to find NESS_DBNAME"),
-            std::env::var("NESS_PASSWORD").expect("Failed to find NESS_PASSWORD"),
-        );
+            let url = format!(
+                "mysql://{}:{}@localhost:3306/{}",
+                std::env::var("NESS_USERNAME").expect("failed to find NESS_USERNAME"),
+                std::env::var("NESS_DBNAME").expect("Failed to find NESS_DBNAME"),
+                std::env::var("NESS_PASSWORD").expect("Failed to find NESS_PASSWORD"),
+            );
             Opts::try_from(url.as_str()).expect("failed to connect to the database");
             let pool = Pool::new(url.as_str()).expect("");
 
