@@ -1,4 +1,4 @@
-pub mod tess {
+pub mod ness {
     use std::path::{Path, PathBuf};
     use std::process::exit;
 

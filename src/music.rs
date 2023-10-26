@@ -1,4 +1,4 @@
-pub mod tess {
+pub mod ness {
     use mysql::prelude::*;
     use mysql::*;
     use rodio::{source::Source, Decoder, OutputStream};
