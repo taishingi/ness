@@ -8,6 +8,7 @@
 * Alsa libs
 * pocketsphinx
 * gcc
+* notify-send
 
 
 # Environment

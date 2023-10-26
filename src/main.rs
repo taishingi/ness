@@ -1,19 +1,28 @@
 mod find;
 mod music;
+mod meteo;
 
 use crate::find::tess::Find;
 use crate::music::tess::Music;
+use crate::meteo::show_meteo;
 use dirs::audio_dir;
 use std::env::args;
 use std::process::exit;
 
-fn main() {
+
+#[tokio::main]
+async fn main() {
     let args: Vec<String> = args().collect();
 
     if args.len() == 1 {
         exit(1);
     }
 
+
+    if args.len() == 2 && args[1].eq("--meteo") {
+        show_meteo().await;
+        exit(0);   
+    }
     if args.len() == 2 && args[1].eq("--save-albums") {
         Music::save_albums(audio_dir().expect("").read_dir().expect(""));
     }
