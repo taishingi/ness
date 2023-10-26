@@ -11,7 +11,7 @@ fn first(args: &[String], expected: &String) -> bool {
 
 fn help(args: &[String]) -> i32 {
     println!(
-        "{} --listen        : Listen the {} content",
+        "{} --listen        : Listen the content of the {} directory",
         args[0],
         audio_dir()
             .expect("failed to find audio dir")
@@ -22,6 +22,24 @@ fn help(args: &[String]) -> i32 {
         "{} --save-albums   : Update the {} database",
         args[0],
         std::env::var("NESS_DBNAME").expect("Failed to fin ness dbname")
+    );
+
+    println!(
+        "{} --listen-track  : Listen the track in the {} directory",
+        args[0],
+        audio_dir()
+            .expect("failed to find audio dir")
+            .to_str()
+            .expect("")
+    );
+
+    println!(
+        "{} --listen-album  : Listen the album in the {} directory",
+        args[0],
+        audio_dir()
+            .expect("failed to find audio dir")
+            .to_str()
+            .expect("")
     );
     1
 }
