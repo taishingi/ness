@@ -47,10 +47,29 @@ pub mod ness {
             }
         }
 
-        pub fn loops(album: &str) {
-            loop {
-                Music::search_and_play(album);
-            }
+        pub fn find_track(track: &str) -> Vec<Albums> {
+            let url = format!(
+                "mysql://{}:{}@localhost:3306/{}",
+                std::env::var("NESS_USERNAME").expect("failed to find NESS_USERNAME"),
+                std::env::var("NESS_DBNAME").expect("Failed to find NESS_DBNAME"),
+                std::env::var("NESS_PASSWORD").expect("Failed to find NESS_PASSWORD"),
+            );
+            Opts::try_from(url.as_str()).expect("failed to connect to the database");
+            let pool = Pool::new(url.as_str()).expect("");
+            let mut conn = pool.get_conn().expect("");
+
+            conn.query_map(
+                format!(
+                    "SELECT artist,album,track FROM albums WHERE track LIKE '%{}%'",
+                    track
+                ),
+                |(artist, album, track)| Albums {
+                    artist,
+                    album,
+                    track,
+                },
+            )
+            .expect("")
         }
         pub fn find_album(album: &str) -> Vec<Albums> {
             let url = format!(
@@ -77,7 +96,22 @@ pub mod ness {
             .expect("")
         }
 
-        pub fn search_and_play(p: &str) {
+        pub fn search_and_play_track(p: &str) {
+            for x in Music::find_track(p).iter() {
+                println!("Listen : {}", &x.track);
+                Music::play(&x.track.to_string());
+            }
+        }
+        
+        pub fn search_and_play_album(p: &str) {
+            for mc in Music::find_album(p).iter() {
+                if Path::new(&mc.album.as_str()).is_dir() {
+                    Music::play_album(&mc.album);
+                }
+            }
+        }
+
+        pub fn listen(p: &str) {
             for mc in Music::find_album(p).iter() {
                 Music::play_album(&mc.album);
             }

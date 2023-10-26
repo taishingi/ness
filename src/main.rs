@@ -1,17 +1,15 @@
-mod meteo;
 mod music;
 use crate::music::ness::Music;
 
 use dirs::audio_dir;
-use meteo::show_meteo;
 use std::env::args;
 use std::process::exit;
 
-fn first(args: &Vec<String>, expected: &String) -> bool {
+fn first(args: &[String], expected: &String) -> bool {
     args[1].eq(expected)
 }
 
-fn help(args: &Vec<String>) -> i32 {
+fn help(args: &[String]) -> i32 {
     println!(
         "{} --listen        : Listen the {} content",
         args[0],
@@ -28,29 +26,28 @@ fn help(args: &Vec<String>) -> i32 {
     1
 }
 
-async fn parse(args: Vec<String>) {
+async fn parse(args: &[String]) {
     match args.len() {
         1 => {
-            exit(help(&args));
+            exit(help(args));
         }
         2 => {
-            if first(&args, &"--save-albums".to_string()) {
+            if first(args, &"--save-albums".to_string()) {
                 Music::save_albums(audio_dir().expect("").read_dir().expect(""));
-            } else if first(&args, &"--listen".to_string()) {
-                Music::loops(
+            } else if first(args, &"--listen".to_string()) {
+                Music::listen(
                     audio_dir()
                         .expect("failed to find audio dir")
                         .to_str()
                         .expect(""),
                 );
-            } else if first(&args, &"--meteo".to_string()) {
-                show_meteo().await;
             }
-            {}
         }
         3 => {
-            if first(&args, &"--listen".to_string()) {
-                Music::loops(&args[2].as_str());
+            if first(args, &"--listen-track".to_string()) {
+                Music::search_and_play_track(args[2].as_str());
+            } else if first(args, &"--listen-album".to_string()) {
+                Music::search_and_play_album(args[2].as_str());
             }
         }
         _ => {
@@ -58,8 +55,9 @@ async fn parse(args: Vec<String>) {
         }
     }
 }
+
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = args().collect();
-    parse(args).await;
+    parse(&args).await;
 }
