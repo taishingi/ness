@@ -9,10 +9,14 @@ edition = "2021"
 audio = "0.2.0-alpha.4"
 audio-core = "0.2.0-alpha.4"
 dirs = { version = "5.0.1", features = [] }
+dotenv = "0.15.0"
 glob = "0.3.1"
 mysql = "24.0.0"
 pocketsphinx = "0.6.0"
+reqwest = { version = "0.11.22" , features = ["blocking", "json"] }
 rodio = "0.17.1"
-serde = { version = "1.0", features = ["derive"] }
+serde = { version = "1.0" , features = ["derive"] }
+serde_derive = "1.0.190"
+serde_json = "1.0.107"
 serde_yaml = "0.9.21"
 sphinxad-sys = "0.1.3"
