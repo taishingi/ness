@@ -38,7 +38,7 @@ async fn main() {
 
     if args.len() == 2 {
         if args[1].eq("--listen") {
-            Music::search_and_play(
+            Music::loops(
                 audio_dir()
                     .expect("failed to find audio dir")
                     .to_str()
@@ -59,7 +59,7 @@ async fn main() {
             if args[2].is_empty() {
                 exit(1);
             } else {
-                Music::search_and_play(&args[2]);
+                Music::loops(&args[2]);
             }
         }
     }

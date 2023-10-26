@@ -47,6 +47,11 @@ pub mod tess {
             }
         }
 
+        pub fn loops(album: &str) {
+            loop {
+                Music::search_and_play(album);
+            }
+        }
         pub fn find_album(album: &str) -> Vec<Albums> {
             let url = format!(
                 "mysql://{}:{}@localhost:3306/{}",
