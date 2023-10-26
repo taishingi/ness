@@ -1,5 +1,12 @@
 # ness
 
+# Dependencies
+
+* MariaDb
+* openssl
+* cargo 
+* Alsa libs
+* 
 
 # Environment
 
