@@ -20,9 +20,22 @@ pub mod tess {
     pub struct Music {}
 
     impl Music {
-        pub fn play_album(directory: &str) {
+        pub fn founded(directory: &str) -> usize {
             let paths = std::fs::read_dir(directory).unwrap();
 
+            let length = paths.count();
+
+            if length > 1 {
+                println!("Found {} results", length);
+            } else {
+                println!("Found {} result", length);
+            }
+            length
+        }
+
+        pub fn play_album(directory: &str) {
+            let paths = std::fs::read_dir(directory).unwrap();
+            Music::founded(directory);
             for path in paths {
                 let track = &path.unwrap().path().to_str().unwrap().to_string();
                 if Path::new(track).is_dir() {
