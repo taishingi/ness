@@ -6,7 +6,9 @@
 * openssl
 * cargo 
 * Alsa libs
-* 
+* pocketsphinx
+* gcc
+
 
 # Environment
 
