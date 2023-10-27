@@ -1,11 +1,11 @@
 pub mod ness {
-    use std::path::{Path, PathBuf};
-    use std::process::exit;
+    use std::path::Path;
+    use std::process::Command;
 
     pub struct Find {}
 
     impl Find {
-        pub fn search_file(dir: &String, filename: &String) -> PathBuf {
+        pub fn edit_file(dir: &String, filename: &String) -> bool {
             let paths = Path::new(dir.as_str()).read_dir().unwrap();
 
             for path in paths {
@@ -14,7 +14,9 @@ pub mod ness {
                     // sql query to save album
                     continue;
                 } else if d.contains(filename) {
-                    return Path::new(d.as_str()).to_path_buf();
+                    let mut c = Command::new(env!("EDITOR"));
+                    c.arg(Path::new(d.as_str()));
+                    return c.spawn().expect("failed to edit file").wait().expect("").success();
                 } else {
                     continue;
                 }
@@ -24,13 +26,14 @@ pub mod ness {
                     "The filename {} has not been founded in the current directory",
                     filename
                 );
+                false
             } else {
                 println!(
                     "The filename {} has not been founded in the {} directory",
                     filename, dir
                 );
+                false
             }
-            exit(1);
         }
     }
 }

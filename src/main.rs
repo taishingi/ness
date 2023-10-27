@@ -1,9 +1,13 @@
 mod music;
+mod find;
+
 use crate::music::ness::Music;
 
 use dirs::audio_dir;
-use std::env::args;
+use std::env::{args, current_dir};
 use std::process::exit;
+
+use crate::find::ness::Find;
 
 fn first(args: &[String], expected: &String) -> bool {
     args[1].eq(expected)
@@ -66,6 +70,21 @@ async fn parse(args: &[String]) {
                 Music::search_and_play_track(args[2].as_str());
             } else if first(args, &"--listen-album".to_string()) {
                 Music::search_and_play_album(args[2].as_str());
+            } else if first(args, &"--edit".to_string()) {
+                if Find::edit_file(&".".to_string(), &args[2]) {
+                    println!("{} has been successfully modified in the {} directory", &args[2], current_dir().expect("").display());
+                } else {
+                    println!("{} has not been successfully modified in the {} directory", &args[2], current_dir().expect("").display());
+                }
+            }
+        }
+        4 => {
+            if first(args, &"--edit".to_string()) {
+                if Find::edit_file(&args[2].to_string(), &args[3]) {
+                    println!("{} has been successfully modified in the {} directory", &args[2], current_dir().expect("").display());
+                } else {
+                    println!("{} has not been successfully modified in the {} directory", &args[2], current_dir().expect("").display());
+                }
             }
         }
         _ => {

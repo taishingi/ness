@@ -71,8 +71,8 @@ pub mod ness {
             );
             Opts::try_from(url.as_str()).expect("failed to connect to the database");
             let pool = Pool::new(url.as_str()).expect("");
-            let conn = pool.get_conn().expect("");
-            conn
+            pool.get_conn().expect("")
+
         }
         ///
         /// # Find track
