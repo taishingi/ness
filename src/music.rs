@@ -20,6 +20,12 @@ pub mod ness {
     pub struct Music {}
 
     impl Music {
+        
+        ///
+        /// # Return the length of fouded results
+        ///
+        /// - `directory`  The directory to count   
+        ///
         pub fn founded(directory: &str) -> usize {
             let paths = std::fs::read_dir(directory).unwrap();
 
@@ -33,6 +39,11 @@ pub mod ness {
             length
         }
 
+        ///
+        /// # Play album
+        ///
+        /// - `directory`   The album dir
+        ///
         pub fn play_album(directory: &str) {
             let paths = std::fs::read_dir(directory).unwrap();
             Music::founded(directory);
@@ -47,6 +58,11 @@ pub mod ness {
             }
         }
 
+        ///
+        /// # Find track
+        ///
+        /// - `track` The track name
+        ///
         pub fn find_track(track: &str) -> Vec<Albums> {
             let url = format!(
                 "mysql://{}:{}@localhost:3306/{}",
@@ -71,6 +87,12 @@ pub mod ness {
             )
             .expect("")
         }
+
+        ///
+        /// # Find album
+        ///
+        /// - `album`   The album name
+        ///
         pub fn find_album(album: &str) -> Vec<Albums> {
             let url = format!(
                 "mysql://{}:{}@localhost:3306/{}",
@@ -96,27 +118,46 @@ pub mod ness {
             .expect("")
         }
 
-        pub fn search_and_play_track(p: &str) {
-            for x in Music::find_track(p).iter() {
+        ///
+        /// # Play a track
+        ///
+        /// - `track`   The track to play
+        ///
+        pub fn search_and_play_track(track: &str) {
+            for x in Music::find_track(track).iter() {
                 println!("Listen : {}", &x.track);
                 Music::play(&x.track.to_string());
             }
         }
-        
-        pub fn search_and_play_album(p: &str) {
-            for mc in Music::find_album(p).iter() {
+
+        ///
+        /// # Play all album in a directory
+        ///
+        /// - `albums` The albums directory
+        ///
+        pub fn search_and_play_album(albums: &str) {
+            for mc in Music::find_album(albums).iter() {
                 if Path::new(&mc.album.as_str()).is_dir() {
                     Music::play_album(&mc.album);
                 }
             }
         }
 
-        pub fn listen(p: &str) {
-            for mc in Music::find_album(p).iter() {
+        ///
+        /// # Listen an album
+        ///
+        /// - `albums` the albums path   
+        ///
+        pub fn listen(albums: &str) {
+            for mc in Music::find_album(albums).iter() {
                 Music::play_album(&mc.album);
             }
         }
-
+        ///
+        /// # Save albums in the database
+        ///
+        /// - `dir` The Music dir path
+        ///
         pub fn save_albums(dir: ReadDir) {
             let url = format!(
                 "mysql://{}:{}@localhost:3306/{}",
@@ -183,6 +224,11 @@ pub mod ness {
             .expect("");
         }
 
+        ///
+        /// # Play a track
+        ///
+        /// - `track`   The track to play
+        ///
         pub fn play(track: &String) {
             if track.is_empty() {
                 println!("track name empty");
