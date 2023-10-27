@@ -4,31 +4,38 @@
 
 * MariaDb
 * openssl
-* cargo 
+* cargo
 * Alsa libs
 * pocketsphinx
 * gcc
 * notify-send
 
+# Environment Variable
 
-# Environment
+```shell
+echo "set -x NESS_USERNAME ness" >> $HOME/.config/fish/config.fish
+```   
 
-$NESS_USERNAME   Username 
+```shell
+echo "set -x NESS_DBNAME ness" >> $HOME/.config/fish/config.fish
+```
 
-$NESS_DBNAME     Database's name
-
-$NESS_PASSWORD   Database password
-
+```shell
+echo "set -x NESS_PASSWORD ness" >> $HOME/.config/fish/config.fish
+```
 
 ### Indexes Music directory content
 
 ```bash
 ness --save-albums
 ```
+
 ### Playing music
 
-
 ```bash
-ness --listen [name]
+ness --listen-track [name]
 ```
 
+```bash
+ness --listen-album [name]
+```
