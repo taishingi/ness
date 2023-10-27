@@ -20,7 +20,6 @@ pub mod ness {
     pub struct Music {}
 
     impl Music {
-        
         ///
         /// # Return the length of fouded results
         ///
@@ -58,12 +57,12 @@ pub mod ness {
             }
         }
 
+
         ///
-        /// # Find track
+        /// # Connection to the database
         ///
-        /// - `track` The track name
-        ///
-        pub fn find_track(track: &str) -> Vec<Albums> {
+        pub fn con() -> PooledConn
+        {
             let url = format!(
                 "mysql://{}:{}@localhost:3306/{}",
                 std::env::var("NESS_USERNAME").expect("failed to find NESS_USERNAME"),
@@ -72,9 +71,16 @@ pub mod ness {
             );
             Opts::try_from(url.as_str()).expect("failed to connect to the database");
             let pool = Pool::new(url.as_str()).expect("");
-            let mut conn = pool.get_conn().expect("");
-
-            conn.query_map(
+            let conn = pool.get_conn().expect("");
+            conn
+        }
+        ///
+        /// # Find track
+        ///
+        /// - `track` The track name
+        ///
+        pub fn find_track(track: &str) -> Vec<Albums> {
+            Music::con().query_map(
                 format!(
                     "SELECT artist,album,track FROM albums WHERE track LIKE '%{}%'",
                     track
@@ -85,7 +91,7 @@ pub mod ness {
                     track,
                 },
             )
-            .expect("")
+                .expect("")
         }
 
         ///
@@ -94,17 +100,7 @@ pub mod ness {
         /// - `album`   The album name
         ///
         pub fn find_album(album: &str) -> Vec<Albums> {
-            let url = format!(
-                "mysql://{}:{}@localhost:3306/{}",
-                std::env::var("NESS_USERNAME").expect("failed to find NESS_USERNAME"),
-                std::env::var("NESS_DBNAME").expect("Failed to find NESS_DBNAME"),
-                std::env::var("NESS_PASSWORD").expect("Failed to find NESS_PASSWORD"),
-            );
-            Opts::try_from(url.as_str()).expect("failed to connect to the database");
-            let pool = Pool::new(url.as_str()).expect("");
-            let mut conn = pool.get_conn().expect("");
-
-            conn.query_map(
+            Music::con().query_map(
                 format!(
                     "SELECT artist,album,track FROM albums WHERE album LIKE '%{}%'",
                     album
@@ -115,7 +111,7 @@ pub mod ness {
                     track,
                 },
             )
-            .expect("")
+                .expect("")
         }
 
         ///
@@ -159,17 +155,8 @@ pub mod ness {
         /// - `dir` The Music dir path
         ///
         pub fn save_albums(dir: ReadDir) {
-            let url = format!(
-                "mysql://{}:{}@localhost:3306/{}",
-                std::env::var("NESS_USERNAME").expect("failed to find NESS_USERNAME"),
-                std::env::var("NESS_DBNAME").expect("Failed to find NESS_DBNAME"),
-                std::env::var("NESS_PASSWORD").expect("Failed to find NESS_PASSWORD"),
-            );
-            Opts::try_from(url.as_str()).expect("failed to connect to the database");
-            let pool = Pool::new(url.as_str()).expect("");
-
-            let mut conn = pool.get_conn().expect("");
-            conn.query_drop(
+            let mut con = Music::con();
+            con.query_drop(
                 r"CREATE TABLE IF NOT EXISTS albums (
                     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
                     artist  LONGTEXT NOT NULL,
@@ -177,7 +164,7 @@ pub mod ness {
                     track   LONGTEXT)
                     ",
             )
-            .expect("");
+                .expect("");
 
             let paths = dir;
 
@@ -210,7 +197,7 @@ pub mod ness {
                 }
             }
 
-            conn.exec_batch(
+            con.exec_batch(
                 r"INSERT INTO albums (artist, album, track)
           VALUES (:artist, :album,:track)",
                 music.iter().map(|p| {
@@ -221,7 +208,7 @@ pub mod ness {
                     }
                 }),
             )
-            .expect("");
+                .expect("");
         }
 
         ///
