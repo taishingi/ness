@@ -1,5 +1,6 @@
 mod music;
 mod find;
+mod weather;
 
 use crate::music::ness::Music;
 
@@ -8,6 +9,7 @@ use std::env::{args, current_dir};
 use std::process::exit;
 
 use crate::find::ness::Find;
+use crate::weather::show_weather;
 
 fn first(args: &[String], expected: &String) -> bool {
     args[1].eq(expected)
@@ -63,6 +65,8 @@ async fn parse(args: &[String]) {
                         .to_str()
                         .expect(""),
                 );
+            } else if first(args, &"--weather".to_string()) {
+                show_weather().await;
             }
         }
         3 => {

@@ -1,16 +1,19 @@
 extern crate chrono;
 extern crate notify_rust;
 extern crate open_meteo_rs;
+
 use notify_rust::Notification;
 
-pub async fn show_meteo() {
+pub async fn show_weather() {
     let client = open_meteo_rs::Client::new();
     let mut opts = open_meteo_rs::forecast::Options::default();
 
+    let latitude: f64 = std::env::var("NESS_LATITUDE").expect("failed to found latitude").parse::<f64>().expect("");
+    let longitude: f64 = std::env::var("NESS_LONGITUDE").expect("failed to found longitude").parse::<f64>().expect("");
     // Location
     opts.location = open_meteo_rs::Location {
-        lat: 48.864716,
-        lng: 2.349014,
+        lat: latitude,
+        lng: longitude,
     };
 
     // Elevation
@@ -83,10 +86,16 @@ pub async fn show_meteo() {
 
     let res = client.forecast(opts).await.unwrap();
 
-    Notification::new()
-        .summary("Ness meteo")
-        .body("a")
-        .show()
-        .unwrap();
-    println!("{:#?}", res);
+
+    for x in res.daily.iter()
+    {
+        for y in x.iter()
+        {
+            Notification::new()
+                .summary(format!("Weather for {}", y.date.to_string()).as_str())
+                .body(format!("Temperature max :  {} {}", y.values["temperature_2m_max"].value.to_string(), y.values["temperature_2m_max"].unit.clone().expect("").to_string() ).as_str())
+                .show()
+                .unwrap();
+        }
+    }
 }
