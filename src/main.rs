@@ -1,5 +1,5 @@
-mod music;
 mod find;
+mod music;
 mod weather;
 
 use crate::music::ness::Music;
@@ -16,7 +16,6 @@ fn first(args: &[String], expected: &String) -> bool {
 }
 
 fn help(args: &[String]) -> i32 {
-
     println!(
         "{} init            : Init the {} database",
         args[0],
@@ -86,19 +85,35 @@ async fn parse(args: &[String]) {
             } else if first(args, &"--listen-album".to_string()) {
                 Music::search_and_play_album(args[2].as_str());
             } else if first(args, &"--edit".to_string()) {
-                if Find::edit_file(&".".to_string(), &args[2]) {
-                    println!("{} has been successfully modified in the {} directory", &args[2], current_dir().expect("").display());
+                if Find::edit_file(".", &args[2]) {
+                    println!(
+                        "{} has been successfully modified in the {} directory",
+                        &args[2],
+                        current_dir().expect("").display()
+                    );
                 } else {
-                    println!("{} has not been successfully modified in the {} directory", &args[2], current_dir().expect("").display());
+                    println!(
+                        "{} has not been successfully modified in the {} directory",
+                        &args[2],
+                        current_dir().expect("").display()
+                    );
                 }
             }
         }
         4 => {
             if first(args, &"--edit".to_string()) {
                 if Find::edit_file(&args[2].to_string(), &args[3]) {
-                    println!("{} has been successfully modified in the {} directory", &args[2], current_dir().expect("").display());
+                    println!(
+                        "{} has been successfully modified in the {} directory",
+                        &args[2],
+                        current_dir().expect("").display()
+                    );
                 } else {
-                    println!("{} has not been successfully modified in the {} directory", &args[2], current_dir().expect("").display());
+                    println!(
+                        "{} has not been successfully modified in the {} directory",
+                        &args[2],
+                        current_dir().expect("").display()
+                    );
                 }
             }
         }

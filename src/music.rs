@@ -57,12 +57,10 @@ pub mod ness {
             }
         }
 
-
         ///
         /// # Connection to the database
         ///
-        pub fn con() -> PooledConn
-        {
+        pub fn con() -> PooledConn {
             let url = format!(
                 "mysql://{}:{}@localhost:3306/{}",
                 std::env::var("NESS_USERNAME").expect("failed to find NESS_USERNAME"),
@@ -77,8 +75,7 @@ pub mod ness {
         ///
         /// # Connection to the database
         ///
-        pub fn root() -> PooledConn
-        {
+        pub fn root() -> PooledConn {
             let url = format!(
                 "mysql://{}:{}@localhost:3306",
                 std::env::var("ROOT_USERNAME").expect("failed to find ROOT_USERNAME"),
@@ -89,30 +86,29 @@ pub mod ness {
             pool.get_conn().expect("")
         }
 
-        pub fn create_database()
-        {
+        pub fn create_database() {
             let mut con = Music::root();
-            let database = format!("CREATE DATABASE IF NOT EXISTS {}  COLLATE = 'utf8mb4_unicode_ci';", std::env::var("NESS_DBNAME").expect("failed to find ness dbname"));
-            let user = format!("CREATE USER '{}'@'localhost' IDENTIFIED BY '{}';", std::env::var("NESS_USERNAME").expect("failed to find ness dbname"), std::env::var("NESS_PASSWORD").expect("failed to get ness user password"));
-            let grant = format!("GRANT ALL PRIVILEGES ON {}.* TO '{}'@localhost IDENTIFIED BY '{}';", std::env::var("NESS_DBNAME").expect("Failed to get ness dbname"), std::env::var("NESS_USERNAME").expect("failed to find ness dbname"), std::env::var("NESS_PASSWORD").expect("failed to get ness user password"));
-            let flush = format!("FLUSH PRIVILEGES;");
-            let _ = con.query_drop(
-                database.leak(),
-            )
-                .expect("");
+            let database = format!(
+                "CREATE DATABASE IF NOT EXISTS {}  COLLATE = 'utf8mb4_unicode_ci';",
+                std::env::var("NESS_DBNAME").expect("failed to find ness dbname")
+            );
+            let user = format!(
+                "CREATE USER '{}'@'localhost' IDENTIFIED BY '{}';",
+                std::env::var("NESS_USERNAME").expect("failed to find ness dbname"),
+                std::env::var("NESS_PASSWORD").expect("failed to get ness user password")
+            );
+            let grant = format!(
+                "GRANT ALL PRIVILEGES ON {}.* TO '{}'@localhost IDENTIFIED BY '{}';",
+                std::env::var("NESS_DBNAME").expect("Failed to get ness dbname"),
+                std::env::var("NESS_USERNAME").expect("failed to find ness dbname"),
+                std::env::var("NESS_PASSWORD").expect("failed to get ness user password")
+            );
+            let flush = "FLUSH PRIVILEGES;".to_string();
+            con.query_drop(database.leak()).expect("");
 
-            let _ = &con.query_drop(
-                user.leak(),
-            )
-                .expect("");
-            let _ = &con.query_drop(
-                grant.leak(),
-            )
-                .expect("");
-            let _ = &con.query_drop(
-                flush.leak(),
-            )
-                .expect("");
+            let _ = &con.query_drop(user.leak()).expect("");
+            let _ = &con.query_drop(grant.leak()).expect("");
+            let _ = &con.query_drop(flush.leak()).expect("");
         }
 
         ///
@@ -121,17 +117,18 @@ pub mod ness {
         /// - `track` The track name
         ///
         pub fn find_track(track: &str) -> Vec<Albums> {
-            Music::con().query_map(
-                format!(
-                    "SELECT artist,album,track FROM albums WHERE track LIKE '%{}%'",
-                    track
-                ),
-                |(artist, album, track)| Albums {
-                    artist,
-                    album,
-                    track,
-                },
-            )
+            Music::con()
+                .query_map(
+                    format!(
+                        "SELECT artist,album,track FROM albums WHERE track LIKE '%{}%'",
+                        track
+                    ),
+                    |(artist, album, track)| Albums {
+                        artist,
+                        album,
+                        track,
+                    },
+                )
                 .expect("")
         }
 
@@ -141,17 +138,18 @@ pub mod ness {
         /// - `album`   The album name
         ///
         pub fn find_album(album: &str) -> Vec<Albums> {
-            Music::con().query_map(
-                format!(
-                    "SELECT artist,album,track FROM albums WHERE album LIKE '%{}%'",
-                    album
-                ),
-                |(artist, album, track)| Albums {
-                    artist,
-                    album,
-                    track,
-                },
-            )
+            Music::con()
+                .query_map(
+                    format!(
+                        "SELECT artist,album,track FROM albums WHERE album LIKE '%{}%'",
+                        album
+                    ),
+                    |(artist, album, track)| Albums {
+                        artist,
+                        album,
+                        track,
+                    },
+                )
                 .expect("")
         }
 
@@ -205,7 +203,7 @@ pub mod ness {
                     track   LONGTEXT)
                     ",
             )
-                .expect("");
+            .expect("");
 
             let paths = dir;
 
@@ -249,7 +247,7 @@ pub mod ness {
                     }
                 }),
             )
-                .expect("");
+            .expect("");
         }
 
         ///
