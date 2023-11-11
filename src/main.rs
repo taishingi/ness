@@ -16,6 +16,14 @@ fn first(args: &[String], expected: &String) -> bool {
 }
 
 fn help(args: &[String]) -> i32 {
+
+    println!(
+        "{} init            : Init the {} database",
+        args[0],
+        std::env::var("NESS_DBNAME")
+            .expect("failed to find ness database name")
+            .as_str()
+    );
     println!(
         "{} --listen        : Listen the content of the {} directory",
         args[0],
@@ -67,6 +75,9 @@ async fn parse(args: &[String]) {
                 );
             } else if first(args, &"--weather".to_string()) {
                 show_weather().await;
+            } else if first(args, &"init".to_string()) {
+                Music::create_database();
+                exit(0);
             }
         }
         3 => {

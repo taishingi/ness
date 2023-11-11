@@ -21,7 +21,7 @@ pub mod ness {
 
     impl Music {
         ///
-        /// # Return the length of fouded results
+        /// # Return the length of founded results
         ///
         /// - `directory`  The directory to count   
         ///
@@ -72,8 +72,49 @@ pub mod ness {
             Opts::try_from(url.as_str()).expect("failed to connect to the database");
             let pool = Pool::new(url.as_str()).expect("");
             pool.get_conn().expect("")
-
         }
+
+        ///
+        /// # Connection to the database
+        ///
+        pub fn root() -> PooledConn
+        {
+            let url = format!(
+                "mysql://{}:{}@localhost:3306",
+                std::env::var("ROOT_USERNAME").expect("failed to find ROOT_USERNAME"),
+                std::env::var("ROOT_PASSWORD").expect("Failed to find ROOT_PASSWORD"),
+            );
+            Opts::try_from(url.as_str()).expect("failed to connect to the database");
+            let pool = Pool::new(url.as_str()).expect("");
+            pool.get_conn().expect("")
+        }
+
+        pub fn create_database()
+        {
+            let mut con = Music::root();
+            let database = format!("CREATE DATABASE IF NOT EXISTS {}  COLLATE = 'utf8mb4_unicode_ci';", std::env::var("NESS_DBNAME").expect("failed to find ness dbname"));
+            let user = format!("CREATE USER '{}'@'localhost' IDENTIFIED BY '{}';", std::env::var("NESS_USERNAME").expect("failed to find ness dbname"), std::env::var("NESS_PASSWORD").expect("failed to get ness user password"));
+            let grant = format!("GRANT ALL PRIVILEGES ON {}.* TO '{}'@localhost IDENTIFIED BY '{}';", std::env::var("NESS_DBNAME").expect("Failed to get ness dbname"), std::env::var("NESS_USERNAME").expect("failed to find ness dbname"), std::env::var("NESS_PASSWORD").expect("failed to get ness user password"));
+            let flush = format!("FLUSH PRIVILEGES;");
+            let _ = con.query_drop(
+                database.leak(),
+            )
+                .expect("");
+
+            let _ = &con.query_drop(
+                user.leak(),
+            )
+                .expect("");
+            let _ = &con.query_drop(
+                grant.leak(),
+            )
+                .expect("");
+            let _ = &con.query_drop(
+                flush.leak(),
+            )
+                .expect("");
+        }
+
         ///
         /// # Find track
         ///
