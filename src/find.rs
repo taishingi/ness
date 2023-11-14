@@ -23,7 +23,7 @@ pub mod ness {
             p.push_str(dir);
             p.push('/');
             p.push_str(x);
-            if Path::new(p.as_str()).is_file() && Path::new(p.as_str()).is_absolute() {
+            if Path::new(p.as_str()).is_file() {
                 return p;
             }
             String::new()
@@ -31,7 +31,7 @@ pub mod ness {
 
         pub fn edit_file(dir: &str, filename: &str) -> bool {
             if Find::find(dir, filename) {
-                let mut c = Command::new(env!("EDITOR"));
+                let mut c = Command::new(std::env::var("EDITOR").expect("failed to fin default editor"));
                 c.arg(Find::get_path(dir, filename).as_str());
                 return c
                     .spawn()

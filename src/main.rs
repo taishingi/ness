@@ -95,7 +95,7 @@ async fn parse(args: &[String]) {
             } else if first(args, &"--listen-album".to_string()) {
                 Music::search_and_play_album(args[2].as_str());
             } else if first(args, &"--edit".to_string()) {
-                if Find::edit_file(".", &args[2]) {
+                if Find::edit_file(".", format!("./{}", &args[2]).as_str()) {
                     println!(
                         "{} has been successfully modified in the {} directory",
                         &args[2],
@@ -115,14 +115,15 @@ async fn parse(args: &[String]) {
                 if Find::edit_file(&args[2].to_string(), &args[3]) {
                     println!(
                         "{} has been successfully modified in the {} directory",
+                        &args[3],
                         &args[2],
-                        current_dir().expect("").display()
+
                     );
                 } else {
                     println!(
                         "{} has not been successfully modified in the {} directory",
+                        &args[3],
                         &args[2],
-                        current_dir().expect("").display()
                     );
                 }
             }
