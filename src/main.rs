@@ -24,6 +24,13 @@ fn help(args: &[String]) -> i32 {
             .as_str()
     );
     println!(
+        "{} --re-init       : re init the {} database",
+        args[0],
+        std::env::var("NESS_DBNAME")
+            .expect("failed to find ness database name")
+            .as_str()
+    );
+    println!(
         "{} --listen        : Listen the content of the {} directory",
         args[0],
         audio_dir()
@@ -76,6 +83,9 @@ async fn parse(args: &[String]) {
                 show_weather().await;
             } else if first(args, &"init".to_string()) {
                 Music::create_database();
+                exit(0);
+            } else if first(args, &"--re-init".to_string()) {
+                Music::re_init_database();
                 exit(0);
             }
         }

@@ -8,6 +8,7 @@ pub mod ness {
     use std::path::Path;
     use std::process::exit;
     use std::string::String;
+    use dirs::audio_dir;
 
     #[derive(Debug, PartialEq, Eq)]
     pub struct Albums {
@@ -111,6 +112,26 @@ pub mod ness {
             let _ = &con.query_drop(flush.leak()).expect("");
         }
 
+        pub fn re_init_database() -> bool {
+            Music::root().query_drop(
+                format!(
+                    "DROP DATABASE {}",
+                    std::env::var("NESS_DBNAME").expect("Failed to find dbname")
+                )
+                    .leak(),
+            ).expect("failed to drop database");
+            Music::root().query_drop(
+                format!(
+                    "DROP USER '{}'@'localhost'",
+                    std::env::var("NESS_USERNAME").expect("Failed to find dbname")
+                )
+                    .leak(),
+            ).expect("failed to delete user");
+            Music::create_database();
+            Music::save_albums(audio_dir().unwrap().read_dir().expect("failed to get audio dir"));
+            true
+        }
+
         ///
         /// # Find track
         ///
@@ -203,7 +224,7 @@ pub mod ness {
                     track   LONGTEXT)
                     ",
             )
-            .expect("");
+                .expect("");
 
             let paths = dir;
 
@@ -247,7 +268,7 @@ pub mod ness {
                     }
                 }),
             )
-            .expect("");
+                .expect("");
         }
 
         ///
