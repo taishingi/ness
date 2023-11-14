@@ -28,6 +28,18 @@ echo "set -x NESS_PASSWORD ness" >> $HOME/.config/fish/config.fish
 echo "set -x EDITOR vim" >> $HOME/.config/fish/config.fish
 ```
 
+# Init the database
+
+```bash
+ness init 
+```
+
+# Re init the database
+
+```bash
+ness --re-init 
+```
+
 ### Indexes Music directory content
 
 ```bash
