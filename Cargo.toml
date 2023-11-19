@@ -2,6 +2,9 @@
 name = "ness"
 version = "0.1.2"
 edition = "2021"
+description = "A personal program to help human"
+license = "GPL-2.0-or-later"
+repository = "https://github.com/taishingi/ness"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
