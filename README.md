@@ -40,6 +40,21 @@ ness init
 ness --re-init 
 ```
 
+
+# Edit file
+
+> edit file in the current directory
+
+```bash
+ness --edit README.md 
+```
+
+> edit file in the /etc directory
+
+```bash
+ness --edit /etc locale.conf 
+```
+
 ### Indexes Music directory content
 
 ```bash
